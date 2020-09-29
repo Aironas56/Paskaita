@@ -1,0 +1,132 @@
+CREATE TABLE IF NOT EXISTS `mydb`.`account` (
+  `account_no` INT NOT NULL,
+  `balance` INT NULL,
+  `id_user` INT NOT NULL,
+  `id_credit_card` INT NOT NULL,
+  `bank_id_bank` INT NOT NULL,
+  PRIMARY KEY (`account_no`),
+  UNIQUE INDEX `id_user_UNIQUE` (`id_user` ASC) VISIBLE,
+  INDEX `fk_account_user_idx` (`id_user` ASC) VISIBLE,
+  INDEX `fk_account_credit_card1_idx` (`id_credit_card` ASC) VISIBLE,
+  INDEX `fk_account_bank1_idx` (`bank_id_bank` ASC) VISIBLE,
+  CONSTRAINT `fk_account_user`
+    FOREIGN KEY (`id_user`)
+    REFERENCES `mydb`.`user` (`id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_account_credit_card1`
+    FOREIGN KEY (`id_credit_card`)
+    REFERENCES `mydb`.`credit_card` (`id_credit_card`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_account_bank1`
+    FOREIGN KEY (`bank_id_bank`)
+    REFERENCES `mydb`.`bank` (`id_bank`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`bank` (
+  `id_bank` INT NOT NULL,
+  `name` VARCHAR(45) NULL,
+  `adress` VARCHAR(45) NULL,
+  `id_user` INT NOT NULL,
+  PRIMARY KEY (`id_bank`),
+  UNIQUE INDEX `id_user_UNIQUE` (`id_user` ASC) VISIBLE)
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`credit_card` (
+  `id_credit_card` INT NOT NULL,
+  `card_type` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_credit_card`))
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`loan` (
+  `id_loan` INT NOT NULL,
+  `amount` INT NULL,
+  `account_no` INT NOT NULL,
+  `interest` VARCHAR(45) NULL,
+  `bank_id_bank` INT NOT NULL,
+  PRIMARY KEY (`id_loan`, `bank_id_bank`),
+  UNIQUE INDEX `account_no_UNIQUE` (`account_no` ASC) VISIBLE,
+  INDEX `fk_loan_account1_idx` (`account_no` ASC) VISIBLE,
+  INDEX `fk_loan_bank1_idx` (`bank_id_bank` ASC) VISIBLE,
+  CONSTRAINT `fk_loan_account1`
+    FOREIGN KEY (`account_no`)
+    REFERENCES `mydb`.`account` (`account_no`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_loan_bank1`
+    FOREIGN KEY (`bank_id_bank`)
+    REFERENCES `mydb`.`bank` (`id_bank`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`transaction` (
+  `id_transaction` INT NOT NULL,
+  `transaction_date` DATE NULL,
+  `loan_id_loan` INT NOT NULL,
+  `account_account_no` INT NOT NULL,
+  `transaction_amount` INT NULL,
+  PRIMARY KEY (`id_transaction`),
+  INDEX `fk_transaction_loan1_idx` (`loan_id_loan` ASC) VISIBLE,
+  INDEX `fk_transaction_account1_idx` (`account_account_no` ASC) VISIBLE,
+  CONSTRAINT `fk_transaction_loan1`
+    FOREIGN KEY (`loan_id_loan`)
+    REFERENCES `mydb`.`loan` (`id_loan`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_transaction_account1`
+    FOREIGN KEY (`account_account_no`)
+    REFERENCES `mydb`.`account` (`account_no`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`user` (
+  `id_user` INT NOT NULL,
+  `name` VARCHAR(45) NULL,
+  `last_name` VARCHAR(45) NULL,
+  `adress` VARCHAR(45) NULL,
+  `phone` INT NULL,
+  `account_no` INT NOT NULL,
+  PRIMARY KEY (`id_user`),
+  UNIQUE INDEX `account_no_UNIQUE` (`account_no` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+insert into account values(546235412,2000,1,1,1);
+insert into account values (455623218,1400,2,1,1);
+insert into account values (455623324,2500,3,2,2);
+insert into account values (455623456,3000,4,2,2);
+insert into account values (455623654,150,5,1,3);
+insert into account values (455623789,400,6,1,3);
+insert into account values (455623740,600,7,2,3);
+insert into account values (455623105,700,8,1,2);
+insert into account values (455623438,1200,9,2,1);
+
+
+Insert into user values(1,'Antanas','Antanaitis','Sodu g 19',860255684,546235412);
+insert into user values (2, 'Mantas','Mantanaitis','Sodu g 11',86412602,455623218);
+insert into user values (3, 'Rokas','Rokaitis','Sodu g 12',86412612,455623324);
+insert into user values (4, 'Tautvydas','Tautvydaitis','Sodu g 13',86412663,455623456);
+insert into user values (5, 'Rimantas','Rimantaitis','Sodu g 14',86412673,455623654);
+insert into user values (6, 'Rimante','Rimantaite','Sodu g 15',86412675,455623789);
+insert into user values (7, 'Saule','Saulaite','Sodu g 2',86412674,455623740);
+insert into user values (8, 'Jonas','Jonaitis','Sodu g 3',86412679,455623105);
+insert into user values (9, 'Rolandas','Rolandaitis','Sodu g 4',86412678,455623438);
+
+insert into credit_card values ( 1,'Kreditine');
+insert into credit_card values ( 2,'Debetine');
+
+insert into bank values (1,'Swedbank','banko g 19', 1);
+insert into bank values(2, 'Seb', 'banko g 20');
+insert into bank values(3, 'Luminor', 'banko g 30');
+
+insert into loan values ( 1,1000, 546235412,'3,0%',1);
+insert into loan values(2,100,455623740,'2,8%',1);
+insert into loan values(3,200,455623789,'4,0%',2);
+insert into loan values(4,500,455623324,'3,2%',3);
+insert into loan values(5,1500,455623456,'2,9%',3);
+
+insert into transaction values(2,'2010-12-28',1,150,546235412);
+insert into transaction values(3,'2011-01-05',2,100,455623740);
+insert into transaction values(4,'2010-12-22',3,150,455623789);
+insert into transaction values(5,'2010-12-25',3,50,455623789);
+insert into transaction values(6,'2010-12-15',5,600,455623456);
+
